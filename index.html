@@ -237,53 +237,6 @@
     margin-bottom: 6px;
   }
 
-  /* AI helper */
-  .ai-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 8px;
-  }
-  .ai-btn {
-    font-size: 12px;
-    padding: 6px 12px;
-    background: var(--paper-warm);
-    border: 1px solid var(--rule);
-    border-radius: 6px;
-    cursor: pointer;
-    color: var(--ink-mid);
-    font-family: 'Inter', 'Pretendard Variable', 'Pretendard', sans-serif;
-    transition: all 0.12s;
-    white-space: nowrap;
-  }
-  .ai-btn:hover { background: var(--accent-light); border-color: var(--accent-mid); color: var(--accent); }
-  .ai-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-  .ai-output {
-    display: none;
-    margin-top: 8px;
-    background: var(--accent-light);
-    border-radius: 8px;
-    padding: 12px 14px;
-    font-size: 13px;
-    color: var(--ink-mid);
-    line-height: 1.7;
-    border: 1px solid rgba(74,124,94,0.2);
-  }
-  .ai-output.show { display: block; }
-  .use-btn {
-    font-size: 12px;
-    padding: 4px 10px;
-    background: transparent;
-    border: 1px solid var(--accent-mid);
-    border-radius: 6px;
-    cursor: pointer;
-    color: var(--accent);
-    margin-top: 8px;
-    font-family: 'Inter', 'Pretendard Variable', 'Pretendard', sans-serif;
-    display: inline-block;
-  }
-  .use-btn:hover { background: var(--accent-light); }
-
   /* SUBMIT */
   .submit-area {
     margin-top: 2rem;
@@ -527,7 +480,7 @@
   <div class="form-wrap">
     <div class="form-header">
       <h1>CEO 추천도서 레터 &amp; 인터뷰</h1>
-      <p>각 항목을 입력하신 후 저장해 주세요. AI 도우미 버튼으로 초안 작성을 도와드립니다.</p>
+      <p>대표님의 독서경영에 대한 높은 관심에 감사드립니다. 아래 항목을 입력하신 후 저장해 주세요.</p>
     </div>
 
     <!-- 1. 도서 정보 -->
@@ -563,10 +516,6 @@
       <div class="section-eyebrow">대표님의 한 줄 평</div>
       <div class="field">
         <textarea id="one-line" rows="2" placeholder="예) 익숙함에서 벗어나 새로운 시각을 갖게 해준 책입니다."></textarea>
-        <div class="ai-row">
-          <button class="ai-btn" onclick="aiDraft('one-line', this)">✨ AI 초안 제안</button>
-        </div>
-        <div class="ai-output" id="ai-one-line"></div>
       </div>
     </div>
 
@@ -576,10 +525,6 @@
       <div class="field">
         <div class="tip-box">💡 회사가 독서를 통한 개인의 성장을 진심으로 응원하고 있다는 점을 담아 주시면 좋습니다.</div>
         <textarea id="rec-letter" rows="5" placeholder="직원들에게 전하고 싶은 말씀을 자유롭게 작성해 주세요."></textarea>
-        <div class="ai-row">
-          <button class="ai-btn" onclick="aiDraft('rec-letter', this)">✨ AI 초안 작성</button>
-        </div>
-        <div class="ai-output" id="ai-rec-letter"></div>
       </div>
     </div>
 
@@ -592,30 +537,18 @@
         <div class="q-label">Q1. 평소 바쁜 일정 속에서도 독서를 거르지 않으시는 대표님만의 노하우가 있으신가요?</div>
         <div class="tip-box">💡 독서를 생활화하는 모습을 통해 리더의 솔선수범, 리더십 항목의 신뢰도를 높여 줍니다.</div>
         <textarea id="q1" rows="6" placeholder="답변을 입력해 주세요."></textarea>
-        <div class="ai-row">
-          <button class="ai-btn" onclick="aiDraft('q1', this)">✨ AI 초안 제안</button>
-        </div>
-        <div class="ai-output" id="ai-q1"></div>
       </div>
 
       <div class="q-block">
         <div class="q-label">Q2. 대표님께서 생각하시는 '독서하는 조직'의 가장 큰 강점은 무엇이라고 보시나요?</div>
         <div class="tip-box">💡 '수평적 소통', '창의적 사고', '유연한 조직 문화' 등의 키워드를 포함해 주시면 독서경영 추진 체계 평가에 도움이 됩니다.</div>
         <textarea id="q2" rows="6" placeholder="답변을 입력해 주세요."></textarea>
-        <div class="ai-row">
-          <button class="ai-btn" onclick="aiDraft('q2', this)">✨ AI 초안 제안</button>
-        </div>
-        <div class="ai-output" id="ai-q2"></div>
       </div>
 
       <div class="q-block">
         <div class="q-label">Q3. 우리 임직원들이 독서를 통해 어떤 변화를 경험하길 기대하시나요?</div>
         <div class="tip-box">💡 '북크닉(Booknic)' 같은 구성원 간 소통 프로그램에 대한 기대감을 언급해 주시면 경영진이 프로그램을 깊이 독려한다는 인상을 줄 수 있습니다.</div>
         <textarea id="q3" rows="6" placeholder="답변을 입력해 주세요."></textarea>
-        <div class="ai-row">
-          <button class="ai-btn" onclick="aiDraft('q3', this)">✨ AI 초안 제안</button>
-        </div>
-        <div class="ai-output" id="ai-q3"></div>
       </div>
     </div>
 
@@ -678,67 +611,6 @@ function addKeyword(tag) {
   if (!val.includes(tag)) el.value = val ? val + ' ' + tag : tag;
 }
 
-// AI prompts
-const aiPrompts = {
-  'one-line': () => {
-    const book = document.getElementById('book-title').value || '해당 도서';
-    const author = document.getElementById('book-author').value || '';
-    return `당신은 헬스케어 건강기능식품 회사 대표입니다. "${book}"${author ? `(저자: ${author})` : ''} 이라는 책에 대한 짧고 진솔한 한 줄 평을 작성해주세요. 대표 직책에 어울리는 격조있고 자연스러운 문체로, 책의 핵심 가치를 담아 한 문장으로 써주세요. 큰따옴표로 감싸주세요. 앞뒤 설명 없이 한 줄 평 문장만 작성해주세요.`;
-  },
-  'rec-letter': () => {
-    const book = document.getElementById('book-title').value || '해당 도서';
-    const author = document.getElementById('book-author').value || '';
-    return `당신은 헬스케어 건강기능식품 회사 대표입니다. 직원들에게 "${book}"${author ? `(저자: ${author})` : ''}을 추천하는 따뜻한 추천사를 3~4문장으로 작성해주세요. 회사가 독서를 통한 개인의 성장을 진심으로 응원한다는 내용과, 북크닉(Booknic)처럼 함께 읽는 문화에 대한 기대를 담아주세요. 격조있되 따뜻한 문체로 써주세요. 추천사 본문만 작성해주세요.`;
-  },
-  'q1': () => {
-    const book = document.getElementById('book-title').value || '해당 도서';
-    return `당신은 헬스케어 건강기능식품 회사 대표입니다. "${book}"을 이번 달 추천도서로 선정했습니다. "바쁜 일정 속에서도 독서를 거르지 않는 본인만의 노하우"를 묻는 인터뷰 질문에 진솔하고 리더다운 답변을 3~4문장으로 작성해주세요. 독서를 생활화하는 구체적인 습관이나 철학을 담아주세요. 답변 본문만 작성해주세요.`;
-  },
-  'q2': () => {
-    return `당신은 헬스케어 건강기능식품 회사 대표입니다. "독서하는 조직의 가장 큰 강점"을 묻는 인터뷰 질문에 답변해주세요. 수평적 소통, 창의적 사고, 유연한 조직 문화 등의 키워드를 자연스럽게 포함해서 3~4문장으로 작성해주세요. 답변 본문만 작성해주세요.`;
-  },
-  'q3': () => {
-    return `당신은 헬스케어 건강기능식품 회사 대표입니다. "임직원들이 독서를 통해 어떤 변화를 경험하길 기대하는지" 묻는 인터뷰 질문에 답변해주세요. 단순히 책을 읽는 것을 넘어, 북크닉(Booknic)과 같은 구성원 간 소통 프로그램에 대한 기대감도 담아 3~4문장으로 작성해주세요. 답변 본문만 작성해주세요.`;
-  }
-};
-
-async function aiDraft(fieldId, btn) {
-  const outputEl = document.getElementById('ai-' + fieldId);
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>작성 중...';
-  outputEl.classList.add('show');
-  outputEl.innerHTML = '<span class="spinner"></span> AI가 초안을 작성하고 있습니다...';
-
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: aiPrompts[fieldId]() }]
-      })
-    });
-    const data = await resp.json();
-    const text = (data.content || []).map(c => c.text || '').join('').trim();
-    outputEl.innerHTML = `<div style="line-height:1.8">${text.replace(/\n/g,'<br>')}</div>
-      <button class="use-btn" onclick="applyDraft('${fieldId}', this)">이 내용 사용하기 ↑</button>`;
-  } catch(e) {
-    outputEl.innerHTML = '오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
-  }
-  btn.disabled = false;
-  btn.innerHTML = '✨ 다시 제안';
-}
-
-function applyDraft(fieldId, btn) {
-  const outputEl = document.getElementById('ai-' + fieldId);
-  const textDiv = outputEl.querySelector('div');
-  if (textDiv) {
-    document.getElementById(fieldId).value = textDiv.innerText.trim();
-    outputEl.classList.remove('show');
-  }
-}
-
 function getEntries() {
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
   catch { return []; }
@@ -774,7 +646,6 @@ function saveEntry() {
 
   // Clear form
   Object.values(fields).forEach(id => { document.getElementById(id).value = ''; });
-  document.querySelectorAll('.ai-output').forEach(el => el.classList.remove('show'));
 }
 
 function closeSaveModal() {
