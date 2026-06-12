@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CEO 추천도서 레터 & 인터뷰</title>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+  @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1a1a;
+    --ink-mid: #4a4a4a;
+    --ink-soft: #8a8a8a;
+    --ink-faint: #c4c4c4;
+    --paper: #ffffff;
+    --paper-warm: #f7f7f5;
+    --paper-card: #ffffff;
+    --accent: #2d5a3d;
+    --accent-light: #eaf2ec;
+    --accent-mid: #3d7050;
+    --rule: #e5e5e3;
+    --danger: #b3492f;
+  }
+
+  html { font-size: 16px; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', 'Pretendard Variable', 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+    line-height: 1.7;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--paper-card);
+    border-bottom: 1px solid var(--rule);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav-brand {
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .nav-brand span {
+    color: var(--accent);
+  }
+  .nav-tabs {
+    display: flex;
+    gap: 0;
+    background: var(--paper-warm);
+    border-radius: 8px;
+    padding: 3px;
+  }
+  .nav-tab {
+    padding: 6px 18px;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-soft);
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-family: 'Inter', 'Pretendard Variable', 'Pretendard', sans-serif;
+  }
+  .nav-tab.active {
+    background: var(--paper-card);
+    color: var(--ink);
+    font-weight: 500;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+
+  /* VIEWS */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* FORM VIEW */
+  .form-wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+  }
+  .form-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .form-header h1 {
+    font-family: 'Inter', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 8px;
+  }
+  .form-header p {
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  .form-section {
+    margin-bottom: 2.5rem;
+  }
+  .section-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    color: var(--accent-mid);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+
+  .field { margin-bottom: 18px; }
+  .field label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-mid);
+    margin-bottom: 7px;
+  }
+  .field input, .field textarea {
+    width: 100%;
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-family: 'Inter', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-weight: 400;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+    resize: vertical;
+  }
+  .field textarea {
+    font-size: 15px;
+    line-height: 1.9;
+    padding: 14px 16px;
+  }
+  .q-block textarea {
+    width: 100%;
+    min-height: 110px;
+    font-size: 15px;
+    line-height: 1.8;
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-family: 'Inter', 'Pretendard Variable', 'Pretendard', sans-serif;
+    color: var(--ink);
+    outline: none;
+    resize: vertical;
+  }
+  .q-block textarea:focus {
+    border-color: var(--accent-mid);
+    box-shadow: 0 0 0 3px rgba(45,90,61,0.08);
+  }
+  .q-block textarea::placeholder {
+    color: var(--ink-faint);
+  }
+  .field input:focus, .field textarea:focus {
+    border-color: var(--accent-mid);
+    box-shadow: 0 0 0 3px rgba(45,90,61,0.08);
+  }
+  .field input::placeholder, .field textarea::placeholder {
+    color: var(--ink-faint);
+  }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .tip-box {
+    font-size: 12px;
+    color: var(--ink-soft);
+    background: var(--accent-light);
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    line-height: 1.6;
+  }
+
+  .keyword-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 7px;
+  }
+  .pill {
+    font-size: 12px;
+    padding: 4px 10px;
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    border-radius: 100px;
+    cursor: pointer;
+    color: var(--ink-mid);
+    font-family: 'Inter', 'Pretendard Variable', 'Pretendard', sans-serif;
+    transition: all 0.12s;
+  }
+  .pill:hover {
+    background: var(--accent-light);
+    border-color: var(--accent-mid);
+    color: var(--accent);
+  }
+
+  .q-block {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 14px;
+  }
+  .q-block .q-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  /* AI helper */
+  .ai-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  .ai-btn {
+    font-size: 12px;
+    padding: 6px 12px;
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--ink-mid);
+    font-family: 'Inter', 'Pretendard Variable', 'Pretendard', sans-serif;
+    transition: all 0.12s;
+    white-space: nowrap;
+  }
+  .ai-btn:hover { background: var(--accent-light); border-color: var(--accent-mid); color: var(--accent); }
+  .ai-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .ai-output {
+    display: none;
+    margin-top: 8px;
+    background: var(--accent-light);
+    border-radius: 8px;
+    padding: 12px 14px;
+    font-size: 13px;
+    color: var(--ink-mid);
+    line-height: 1.7;
+    border: 1px solid rgba(74,124,94,0.2);
+  }
+  .ai-output.show { display: block; }
+  .use-btn {
+    font-size: 12px;
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid var(--accent-mid);
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--accent);
+    margin-top: 8px;
+    font-family: 'Inter', 'Pretendard Variable', 'Pretendard', sans-serif;
+    display: inline-block;
+  }
+  .use-btn:hover { background: var(--accent-light); }
+
+  /* SUBMIT */
+  .submit-area {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .btn-primary {
+    padding: 12px 28px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'Inter', 'Pretendard Variable', 'Pretendard', sans-serif;
+    transition: background 0.15s;
+  }
+  .btn-primary:hover { background: var(--accent-mid); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+  .save-msg { font-size: 13px; color: var(--ink-soft); display: none; }
+  .save-msg.show { display: block; }
+
+  /* SAVE MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.32);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: var(--paper-card);
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    max-width: 320px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    animation: modal-pop 0.18s ease-out;
+  }
+  @keyframes modal-pop {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .modal-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--accent-light);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 24px;
+  }
+  .modal-box h3 {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .modal-box p {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .modal-box button {
+    padding: 10px 28px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: 'Inter', 'Pretendard Variable', 'Pretendard', sans-serif;
+    transition: background 0.15s;
+  }
+  .modal-box button:hover { background: var(--accent-mid); }
+
+  /* DASHBOARD VIEW */
+  .dash-wrap {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 6rem;
+  }
+  .dash-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .dash-header h2 {
+    font-family: 'Inter', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .entry-count {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 5rem 2rem;
+  }
+  .empty-state p {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+  .empty-state span { font-size: 13px; color: var(--ink-faint); }
+
+  /* Entry card */
+  .entry-card {
+    background: var(--paper-card);
+    border: 1px solid var(--rule);
+    border-radius: 12px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+  .entry-card-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--paper-warm);
+  }
+  .entry-book-title {
+    font-family: 'Inter', 'Pretendard Variable', 'Pretendard', sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+  .entry-book-author {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 2px;
+  }
+  .entry-date {
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+  .entry-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 1rem 1.5rem 0;
+  }
+  .kw-badge {
+    font-size: 12px;
+    padding: 3px 10px;
+    background: var(--accent-light);
+    color: var(--accent);
+    border-radius: 100px;
+  }
+  .entry-body {
+    padding: 1rem 1.5rem 1.5rem;
+  }
+  .entry-section {
+    margin-bottom: 1.25rem;
+  }
+  .entry-section:last-child { margin-bottom: 0; }
+  .entry-section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    color: var(--accent-mid);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .entry-section-text {
+    font-size: 14px;
+    color: var(--ink-mid);
+    line-height: 1.8;
+    white-space: pre-wrap;
+  }
+  .entry-divider {
+    height: 1px;
+    background: var(--rule);
+    margin: 1rem 0;
+  }
+
+  .delete-btn {
+    font-size: 12px;
+    color: var(--danger);
+    background: transparent;
+    border: 1px solid rgba(139,58,42,0.2);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-family: 'Inter', 'Pretendard Variable', 'Pretendard', sans-serif;
+    margin-left: 12px;
+    transition: background 0.12s;
+  }
+  .delete-btn:hover { background: #fdf0ee; }
+
+  .spinner {
+    display: inline-block;
+    width: 12px; height: 12px;
+    border: 1.5px solid var(--rule);
+    border-top-color: var(--accent-mid);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 600px) {
+    .field-row { grid-template-columns: 1fr; }
+    .dash-header { flex-direction: column; align-items: flex-start; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">유한건강생활 <span>독서경영</span></div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="switchView('form')">✍️ 입력하기</button>
+    <button class="nav-tab" onclick="switchView('dashboard')">📋 결과 보기</button>
+  </div>
+</nav>
+
+<!-- FORM VIEW -->
+<div id="view-form" class="view active">
+  <div class="form-wrap">
+    <div class="form-header">
+      <h1>CEO 추천도서 레터 &amp; 인터뷰</h1>
+      <p>각 항목을 입력하신 후 저장해 주세요. AI 도우미 버튼으로 초안 작성을 도와드립니다.</p>
+    </div>
+
+    <!-- 1. 도서 정보 -->
+    <div class="form-section">
+      <div class="section-eyebrow">추천 도서 정보</div>
+      <div class="field-row">
+        <div class="field">
+          <label>도서명</label>
+          <input type="text" id="book-title" placeholder="예) 제로클릭">
+        </div>
+        <div class="field">
+          <label>저자</label>
+          <input type="text" id="book-author" placeholder="예) 이승희">
+        </div>
+      </div>
+      <div class="field">
+        <label>핵심 키워드</label>
+        <input type="text" id="book-keywords" placeholder="예) #소통 #변화 #성장">
+        <div class="keyword-pills">
+          <button class="pill" onclick="addKeyword('#소통')">#소통</button>
+          <button class="pill" onclick="addKeyword('#성장')">#성장</button>
+          <button class="pill" onclick="addKeyword('#변화')">#변화</button>
+          <button class="pill" onclick="addKeyword('#리더십')">#리더십</button>
+          <button class="pill" onclick="addKeyword('#혁신')">#혁신</button>
+          <button class="pill" onclick="addKeyword('#경영')">#경영</button>
+          <button class="pill" onclick="addKeyword('#창의')">#창의</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 한 줄 평 -->
+    <div class="form-section">
+      <div class="section-eyebrow">대표님의 한 줄 평</div>
+      <div class="field">
+        <textarea id="one-line" rows="2" placeholder="예) 익숙함에서 벗어나 새로운 시각을 갖게 해준 책입니다."></textarea>
+        <div class="ai-row">
+          <button class="ai-btn" onclick="aiDraft('one-line', this)">✨ AI 초안 제안</button>
+        </div>
+        <div class="ai-output" id="ai-one-line"></div>
+      </div>
+    </div>
+
+    <!-- 3. 추천사 -->
+    <div class="form-section">
+      <div class="section-eyebrow">직원에게 전하는 추천사</div>
+      <div class="field">
+        <div class="tip-box">💡 회사가 독서를 통한 개인의 성장을 진심으로 응원하고 있다는 점을 담아 주시면 좋습니다.</div>
+        <textarea id="rec-letter" rows="5" placeholder="직원들에게 전하고 싶은 말씀을 자유롭게 작성해 주세요."></textarea>
+        <div class="ai-row">
+          <button class="ai-btn" onclick="aiDraft('rec-letter', this)">✨ AI 초안 작성</button>
+        </div>
+        <div class="ai-output" id="ai-rec-letter"></div>
+      </div>
+    </div>
+
+    <!-- 4. 미니 인터뷰 -->
+    <div class="form-section">
+      <div class="section-eyebrow">Mini Interview — 독서와 경영</div>
+      <p style="font-size:13px; color:var(--ink-soft); margin-bottom:16px; line-height:1.6;">※ 이 답변은 독서경영 우수직장 인증의 경영진 리더십 항목 공식 증빙자료로 활용됩니다.</p>
+
+      <div class="q-block">
+        <div class="q-label">Q1. 평소 바쁜 일정 속에서도 독서를 거르지 않으시는 대표님만의 노하우가 있으신가요?</div>
+        <div class="tip-box">💡 독서를 생활화하는 모습을 통해 리더의 솔선수범, 리더십 항목의 신뢰도를 높여 줍니다.</div>
+        <textarea id="q1" rows="6" placeholder="답변을 입력해 주세요."></textarea>
+        <div class="ai-row">
+          <button class="ai-btn" onclick="aiDraft('q1', this)">✨ AI 초안 제안</button>
+        </div>
+        <div class="ai-output" id="ai-q1"></div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-label">Q2. 대표님께서 생각하시는 '독서하는 조직'의 가장 큰 강점은 무엇이라고 보시나요?</div>
+        <div class="tip-box">💡 '수평적 소통', '창의적 사고', '유연한 조직 문화' 등의 키워드를 포함해 주시면 독서경영 추진 체계 평가에 도움이 됩니다.</div>
+        <textarea id="q2" rows="6" placeholder="답변을 입력해 주세요."></textarea>
+        <div class="ai-row">
+          <button class="ai-btn" onclick="aiDraft('q2', this)">✨ AI 초안 제안</button>
+        </div>
+        <div class="ai-output" id="ai-q2"></div>
+      </div>
+
+      <div class="q-block">
+        <div class="q-label">Q3. 우리 임직원들이 독서를 통해 어떤 변화를 경험하길 기대하시나요?</div>
+        <div class="tip-box">💡 '북크닉(Booknic)' 같은 구성원 간 소통 프로그램에 대한 기대감을 언급해 주시면 경영진이 프로그램을 깊이 독려한다는 인상을 줄 수 있습니다.</div>
+        <textarea id="q3" rows="6" placeholder="답변을 입력해 주세요."></textarea>
+        <div class="ai-row">
+          <button class="ai-btn" onclick="aiDraft('q3', this)">✨ AI 초안 제안</button>
+        </div>
+        <div class="ai-output" id="ai-q3"></div>
+      </div>
+    </div>
+
+    <div class="submit-area">
+      <button class="btn-primary" id="save-btn" onclick="saveEntry()">저장하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- SAVE CONFIRMATION MODAL -->
+<div class="modal-overlay" id="save-modal">
+  <div class="modal-box">
+    <div class="modal-icon">✓</div>
+    <h3>저장되었습니다</h3>
+    <p>답변이 안전하게 저장되었습니다.<br>감사합니다 :)</p>
+    <button onclick="closeSaveModal()">확인</button>
+  </div>
+</div>
+
+<!-- DASHBOARD VIEW -->
+<div id="view-dashboard" class="view">
+  <div class="dash-wrap">
+    <div class="dash-header">
+      <h2>제출된 인터뷰 결과</h2>
+      <span class="entry-count" id="entry-count">—</span>
+    </div>
+    <div id="entries-container">
+      <div class="empty-state">
+        <p>아직 저장된 내용이 없습니다.</p>
+        <span>'입력하기' 탭에서 내용을 작성하고 저장해 주세요.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'ceo_interview_entries_v1';
+
+const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbxnIgQkxq2P5l7ew5CfbjAKJOW9jBF69tkS5zem72xB-be7FqRO3dBbT95rWJA4s13a6g/exec';
+const EMAILJS_PUBLIC_KEY = '0XYOIffXoZt1ZpaPz';
+const EMAILJS_SERVICE_ID = 'service_aob04pf';
+const EMAILJS_TEMPLATE_ID = 'template_23adjo4';
+const NOTIFY_EMAIL = 'sjjang@yuhancare.com'; // 결과 받을 이메일 주소
+
+if (window.emailjs && EMAILJS_PUBLIC_KEY !== 'YOUR_PUBLIC_KEY') {
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+}
+
+function switchView(view) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('view-' + view).classList.add('active');
+  event.target.classList.add('active');
+  if (view === 'dashboard') renderDashboard();
+}
+
+function addKeyword(tag) {
+  const el = document.getElementById('book-keywords');
+  const val = el.value.trim();
+  if (!val.includes(tag)) el.value = val ? val + ' ' + tag : tag;
+}
+
+// AI prompts
+const aiPrompts = {
+  'one-line': () => {
+    const book = document.getElementById('book-title').value || '해당 도서';
+    const author = document.getElementById('book-author').value || '';
+    return `당신은 헬스케어 건강기능식품 회사 대표입니다. "${book}"${author ? `(저자: ${author})` : ''} 이라는 책에 대한 짧고 진솔한 한 줄 평을 작성해주세요. 대표 직책에 어울리는 격조있고 자연스러운 문체로, 책의 핵심 가치를 담아 한 문장으로 써주세요. 큰따옴표로 감싸주세요. 앞뒤 설명 없이 한 줄 평 문장만 작성해주세요.`;
+  },
+  'rec-letter': () => {
+    const book = document.getElementById('book-title').value || '해당 도서';
+    const author = document.getElementById('book-author').value || '';
+    return `당신은 헬스케어 건강기능식품 회사 대표입니다. 직원들에게 "${book}"${author ? `(저자: ${author})` : ''}을 추천하는 따뜻한 추천사를 3~4문장으로 작성해주세요. 회사가 독서를 통한 개인의 성장을 진심으로 응원한다는 내용과, 북크닉(Booknic)처럼 함께 읽는 문화에 대한 기대를 담아주세요. 격조있되 따뜻한 문체로 써주세요. 추천사 본문만 작성해주세요.`;
+  },
+  'q1': () => {
+    const book = document.getElementById('book-title').value || '해당 도서';
+    return `당신은 헬스케어 건강기능식품 회사 대표입니다. "${book}"을 이번 달 추천도서로 선정했습니다. "바쁜 일정 속에서도 독서를 거르지 않는 본인만의 노하우"를 묻는 인터뷰 질문에 진솔하고 리더다운 답변을 3~4문장으로 작성해주세요. 독서를 생활화하는 구체적인 습관이나 철학을 담아주세요. 답변 본문만 작성해주세요.`;
+  },
+  'q2': () => {
+    return `당신은 헬스케어 건강기능식품 회사 대표입니다. "독서하는 조직의 가장 큰 강점"을 묻는 인터뷰 질문에 답변해주세요. 수평적 소통, 창의적 사고, 유연한 조직 문화 등의 키워드를 자연스럽게 포함해서 3~4문장으로 작성해주세요. 답변 본문만 작성해주세요.`;
+  },
+  'q3': () => {
+    return `당신은 헬스케어 건강기능식품 회사 대표입니다. "임직원들이 독서를 통해 어떤 변화를 경험하길 기대하는지" 묻는 인터뷰 질문에 답변해주세요. 단순히 책을 읽는 것을 넘어, 북크닉(Booknic)과 같은 구성원 간 소통 프로그램에 대한 기대감도 담아 3~4문장으로 작성해주세요. 답변 본문만 작성해주세요.`;
+  }
+};
+
+async function aiDraft(fieldId, btn) {
+  const outputEl = document.getElementById('ai-' + fieldId);
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>작성 중...';
+  outputEl.classList.add('show');
+  outputEl.innerHTML = '<span class="spinner"></span> AI가 초안을 작성하고 있습니다...';
+
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: aiPrompts[fieldId]() }]
+      })
+    });
+    const data = await resp.json();
+    const text = (data.content || []).map(c => c.text || '').join('').trim();
+    outputEl.innerHTML = `<div style="line-height:1.8">${text.replace(/\n/g,'<br>')}</div>
+      <button class="use-btn" onclick="applyDraft('${fieldId}', this)">이 내용 사용하기 ↑</button>`;
+  } catch(e) {
+    outputEl.innerHTML = '오류가 발생했습니다. 잠시 후 다시 시도해주세요.';
+  }
+  btn.disabled = false;
+  btn.innerHTML = '✨ 다시 제안';
+}
+
+function applyDraft(fieldId, btn) {
+  const outputEl = document.getElementById('ai-' + fieldId);
+  const textDiv = outputEl.querySelector('div');
+  if (textDiv) {
+    document.getElementById(fieldId).value = textDiv.innerText.trim();
+    outputEl.classList.remove('show');
+  }
+}
+
+function getEntries() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+  catch { return []; }
+}
+
+function saveEntries(entries) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+}
+
+function saveEntry() {
+  const fields = { bookTitle: 'book-title', bookAuthor: 'book-author', keywords: 'book-keywords', oneLine: 'one-line', recLetter: 'rec-letter', q1: 'q1', q2: 'q2', q3: 'q3' };
+  const data = {};
+  for (const [key, id] of Object.entries(fields)) {
+    data[key] = document.getElementById(id)?.value?.trim() || '';
+  }
+  const empty = Object.entries(data).filter(([k,v]) => !v);
+  if (empty.length > 0) {
+    alert('모든 항목을 입력해 주세요.');
+    return;
+  }
+  data.savedAt = new Date().toISOString();
+  data.id = Date.now();
+
+  const entries = getEntries();
+  entries.unshift(data);
+  saveEntries(entries);
+
+  sendEmailNotification(data);
+  sendToGoogleSheet(data);
+
+  const modal = document.getElementById('save-modal');
+  modal.classList.add('show');
+
+  // Clear form
+  Object.values(fields).forEach(id => { document.getElementById(id).value = ''; });
+  document.querySelectorAll('.ai-output').forEach(el => el.classList.remove('show'));
+}
+
+function closeSaveModal() {
+  document.getElementById('save-modal').classList.remove('show');
+}
+
+function sendToGoogleSheet(data) {
+  if (!GOOGLE_SHEET_URL) return;
+  fetch(GOOGLE_SHEET_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(() => {
+    console.log('구글 시트 전송 완료');
+  }).catch((err) => {
+    console.error('구글 시트 전송 실패:', err);
+  });
+}
+
+function sendEmailNotification(data) {
+  if (!window.emailjs || EMAILJS_PUBLIC_KEY === 'YOUR_PUBLIC_KEY') {
+    console.log('EmailJS가 설정되지 않아 이메일 발송을 건너뜁니다.');
+    return;
+  }
+  const message = `📖 도서명: ${data.bookTitle}
+저자: ${data.bookAuthor}
+키워드: ${data.keywords}
+
+[한 줄 평]
+${data.oneLine}
+
+[직원 추천사]
+${data.recLetter}
+
+[Q1. 독서 노하우]
+${data.q1}
+
+[Q2. 독서하는 조직의 강점]
+${data.q2}
+
+[Q3. 임직원에게 기대하는 변화]
+${data.q3}
+
+제출 시각: ${new Date(data.savedAt).toLocaleString('ko-KR')}`;
+
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+    to_email: NOTIFY_EMAIL,
+    book_title: data.bookTitle,
+    message: message
+  }).then(() => {
+    console.log('이메일 전송 완료');
+  }).catch((err) => {
+    console.error('이메일 전송 실패:', err);
+  });
+}
+
+function deleteEntry(id) {
+  if (!confirm('이 항목을 삭제하시겠습니까?')) return;
+  const entries = getEntries().filter(e => e.id !== id);
+  saveEntries(entries);
+  renderDashboard();
+}
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  return `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}.${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function renderDashboard() {
+  const entries = getEntries();
+  const container = document.getElementById('entries-container');
+  const countEl = document.getElementById('entry-count');
+  countEl.textContent = entries.length > 0 ? `총 ${entries.length}건` : '';
+
+  if (entries.length === 0) {
+    container.innerHTML = `<div class="empty-state"><p>아직 저장된 내용이 없습니다.</p><span>'입력하기' 탭에서 내용을 작성하고 저장해 주세요.</span></div>`;
+    return;
+  }
+
+  container.innerHTML = entries.map(e => {
+    const kws = (e.keywords || '').split(/\s+/).filter(Boolean);
+    return `
+    <div class="entry-card">
+      <div class="entry-card-header">
+        <div>
+          <div class="entry-book-title">📖 ${esc(e.bookTitle)}</div>
+          <div class="entry-book-author">${esc(e.bookAuthor)}</div>
+        </div>
+        <div style="display:flex; align-items:center">
+          <span class="entry-date">${formatDate(e.savedAt)}</span>
+          <button class="delete-btn" onclick="deleteEntry(${e.id})">삭제</button>
+        </div>
+      </div>
+      ${kws.length > 0 ? `<div class="entry-keywords">${kws.map(k=>`<span class="kw-badge">${esc(k)}</span>`).join('')}</div>` : ''}
+      <div class="entry-body">
+        <div class="entry-section">
+          <div class="entry-section-label">한 줄 평</div>
+          <div class="entry-section-text">${esc(e.oneLine)}</div>
+        </div>
+        <div class="entry-divider"></div>
+        <div class="entry-section">
+          <div class="entry-section-label">직원 추천사</div>
+          <div class="entry-section-text">${esc(e.recLetter)}</div>
+        </div>
+        <div class="entry-divider"></div>
+        <div class="entry-section">
+          <div class="entry-section-label">Q1. 독서 노하우</div>
+          <div class="entry-section-text">${esc(e.q1)}</div>
+        </div>
+        <div class="entry-section">
+          <div class="entry-section-label">Q2. 독서하는 조직의 강점</div>
+          <div class="entry-section-text">${esc(e.q2)}</div>
+        </div>
+        <div class="entry-section">
+          <div class="entry-section-label">Q3. 임직원에게 기대하는 변화</div>
+          <div class="entry-section-text">${esc(e.q3)}</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+</script>
+</body>
+</html>
